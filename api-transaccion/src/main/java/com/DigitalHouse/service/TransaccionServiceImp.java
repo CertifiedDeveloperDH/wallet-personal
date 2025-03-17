@@ -2,6 +2,7 @@ package com.DigitalHouse.service;
 
 import com.DigitalHouse.Entity.Cuenta;
 import com.DigitalHouse.entity.Transaccion;
+import com.DigitalHouse.feign.CuentaClient;
 import com.DigitalHouse.repository.TransaccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
@@ -24,8 +25,6 @@ public class TransaccionServiceImp implements TransaccionService{
     public List<Transaccion> obtenerTransaccionPorTipo(Long cuentaId, String tipo) {
         return List.of();
     }
-    @Autowired
-    private TransaccionRepository transaccionRepository;
 
     @Autowired
     private CuentaClient cuentaClient;
@@ -50,9 +49,9 @@ public class TransaccionServiceImp implements TransaccionService{
 
         // Registrar la transacción
         Transaccion transaccion = Transaccion.builder()
-                .cuentaId(cuentaId)
+                .cuenta(cuenta)
                 .tipo(tipo)
-                .monto(monto)
+                .amount(monto)
                 .fecha(LocalDateTime.now())
                 .build();
 

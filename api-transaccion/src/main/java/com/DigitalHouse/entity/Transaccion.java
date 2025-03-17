@@ -1,5 +1,6 @@
 package com.DigitalHouse.entity;
 
+import com.DigitalHouse.Entity.Cuenta;
 import jakarta.persistence.*;
 import lombok.Builder;
 
