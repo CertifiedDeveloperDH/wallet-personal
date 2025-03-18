@@ -7,29 +7,29 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: api-usuario
+      MYSQL_DATABASE: api_usuario
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # Volumen persistente para MySQL
+      - mysql_user_data:/var/lib/mysql  # Volumen persistente para MySQL
     networks:
       - mynetwork
 
 mysql-user-db:
     image: mysql:8
-    container_name: mysql-user-container
+    container_name: mysql-account-container
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: cuenta-db
+      MYSQL_DATABASE: cuenta_db
       MYSQL_USER: cuenta
       MYSQL_PASSWORD: cuentapassword
     ports:
-      - "3307:3306"
+      - "3308:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # Volumen persistente para MySQL
+      - mysql_account_data:/var/lib/mysql  # Volumen persistente para MySQL
     networks:
       - mynetwork
 
@@ -73,6 +73,7 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:  # Volumen para MySQL (user-service)
+  mysql_user_data:  # Volumen para MySQL (user-service)
+  mysql_account_data:  # Volumen para MySQL (account-service)
   postgres_data:  # Volumen para PostgreSQL (Keycloak)
   keycloak_data:  # Volumen para Keycloak
