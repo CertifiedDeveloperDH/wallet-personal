@@ -5,12 +5,13 @@ import com.DigitalHouse.entity.Transaccion;
 import com.DigitalHouse.feign.CuentaClient;
 import com.DigitalHouse.repository.TransaccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Service
 public class TransaccionServiceImp implements TransaccionService{
     @Autowired
     private TransaccionRepository transaccionRepository;
@@ -51,7 +52,7 @@ public class TransaccionServiceImp implements TransaccionService{
         Transaccion transaccion = Transaccion.builder()
                 .cuenta(cuenta)
                 .tipo(tipo)
-                .amount(monto)
+                .monto(monto)
                 .fecha(LocalDateTime.now())
                 .build();
 

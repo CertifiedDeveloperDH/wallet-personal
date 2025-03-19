@@ -17,13 +17,13 @@ public class TransaccionController {
     private TransaccionServiceImp transactionService;
 
     @PostMapping
-    public ResponseEntity<Transaccion> createTransaction(@RequestParam Long accountId, @RequestParam String type, @RequestParam BigDecimal amount) {
-        Transaction transaction = (Transaction) transactionService.crearTransaccion(accountId, type, amount);
+    public ResponseEntity<Transaccion> createTransaction(@RequestParam Long cuentaId, @RequestParam String tipo, @RequestParam BigDecimal monto) {
+        Transaction transaction = (Transaction) transactionService.crearTransaccion(cuentaId, tipo, monto);
         return ResponseEntity.ok((Transaccion) transaction);
     }
 
     @GetMapping("/{cuentaId}")
-    public ResponseEntity<List<Transaccion>> getTransactions(@PathVariable Long accountId, @RequestParam String type) {
-        return ResponseEntity.ok(transactionService.obtenerTransaccionPorTipo(accountId, type));
+    public ResponseEntity<List<Transaccion>> getTransactions(@PathVariable Long cuentaId, @RequestParam String tipo) {
+        return ResponseEntity.ok(transactionService.obtenerTransaccionPorTipo(cuentaId, tipo));
     }
 }
