@@ -22,7 +22,7 @@ public class Cuenta {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String alias = generateAlias();
+    private String alias;
 
     @Column(nullable = false)
     private BigDecimal balance;
