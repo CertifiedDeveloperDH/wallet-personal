@@ -15,4 +15,19 @@ public class CuentaDTO {
         this.userId = userId;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
 }

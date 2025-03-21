@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TransaccionServiceImp implements TransaccionService{
     @Autowired
@@ -23,8 +25,8 @@ public class TransaccionServiceImp implements TransaccionService{
     }
 
     @Override
-    public List<Transaccion> obtenerTransaccionPorTipo(Long cuentaId, String tipo) {
-        return List.of();
+    public Optional<Transaccion> obtenerTransaccionPorTipo(Long cuentaId, String tipo) {
+        return transaccionRepository.findByCuentaIdAndTipo(cuentaId, tipo).stream().findFirst();
     }
 
     @Autowired
