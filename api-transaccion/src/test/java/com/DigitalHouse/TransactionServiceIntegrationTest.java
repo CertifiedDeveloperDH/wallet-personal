@@ -53,7 +53,7 @@ public class TransactionServiceIntegrationTest {
     @Test
     @Order(2)
     public void testObtenerTransaccionPorId() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/transaccion/{id}", 1)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/transaccion/1", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
