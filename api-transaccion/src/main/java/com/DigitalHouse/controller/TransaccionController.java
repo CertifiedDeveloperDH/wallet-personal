@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/transaccion")
@@ -23,7 +24,7 @@ public class TransaccionController {
     }
 
     @GetMapping("/{cuentaId}")
-    public ResponseEntity<List<Transaccion>> getTransactions(@PathVariable Long cuentaId, @RequestParam String tipo) {
+    public ResponseEntity<Optional<Transaccion>> getTransactions(@PathVariable Long cuentaId, @RequestParam String tipo) {
         return ResponseEntity.ok(transactionService.obtenerTransaccionPorTipo(cuentaId, tipo));
     }
 }
