@@ -22,6 +22,7 @@
     <module>api-cuenta</module>
     <module>api-transaccion</module>
     <module>api-config</module>
+    <module>api-auth</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
