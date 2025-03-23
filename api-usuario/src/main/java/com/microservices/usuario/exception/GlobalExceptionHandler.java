@@ -1,7 +1,7 @@
 package com.microservices.usuario.exception;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,7 +12,7 @@ import java.io.File;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private final static Logger logger = Logger.getLogger(GlobalExceptionHandler.class);
+    private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<String> procesarResourceNotFound(ResourceNotFoundException resourceNotFoundException) {
