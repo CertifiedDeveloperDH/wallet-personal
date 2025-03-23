@@ -12,4 +12,4 @@ bin/
 *.DS_Store
 
 # Ignorar los archivos de test solo en la rama main
-src/test/
+#src/test/
