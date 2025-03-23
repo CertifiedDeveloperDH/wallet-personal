@@ -1,81 +1,64 @@
 version: "3.8"
 
 services:
-  mysql-user-db:
+  mysql-db:
     image: mysql:8
-    container_name: mysql-user-container
+    container_name: mysql-container
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: api_usuario
+      MYSQL_DATABASE: api_db  # Base de datos unificada
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
       - "3307:3306"
     volumes:
-      - mysql_user_data:/var/lib/mysql  # Volumen persistente para MySQL
-      - ./init-scripts/mysql-user-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data_wallet:/var/lib/mysql  # Volumen persistente para MySQL
+      - ./init-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mynetwork
 
-  mysql-account-db:
-    image: mysql:8
-    container_name: mysql-account-container
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: cuenta_db
-      MYSQL_USER: cuenta
-      MYSQL_PASSWORD: cuentapassword
-    ports:
-      - "3308:3306"
-    volumes:
-      - mysql_account_data:/var/lib/mysql  # Volumen persistente para MySQL
-      - ./init-scripts/mysql-account-init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - mynetwork
+  # Comentado Keycloak y PostgreSQL
+  # postgres-keycloak:
+  #   image: postgres:16
+  #   container_name: postgres-keycloak-container
+  #   restart: always
+  #   environment:
+  #     POSTGRES_DB: keycloak_db
+  #     POSTGRES_USER: keycloak
+  #     POSTGRES_PASSWORD: keycloakpassword
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data  # Volumen persistente para PostgreSQL
+  #   networks:
+  #     - mynetwork
 
-  postgres-keycloak:
-    image: postgres:16
-    container_name: postgres-keycloak-container
-    restart: always
-    environment:
-      POSTGRES_DB: keycloak_db
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloakpassword
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data  # Volumen persistente para PostgreSQL
-    networks:
-      - mynetwork
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.2
-    container_name: keycloak-container
-    command: ["start-dev"]
-    environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak_db
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: keycloakpassword
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    ports:
-      - "8088:8080"
-    depends_on:
-      - postgres-keycloak
-    volumes:
-      - keycloak_data:/opt/keycloak/data  # Volumen persistente para Keycloak
-    networks:
-      - mynetwork
+  # keycloak:
+  #   image: quay.io/keycloak/keycloak:24.0.2
+  #   container_name: keycloak-container
+  #   command: ["start-dev"]
+  #   environment:
+  #     KC_DB: postgres
+  #     KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak_db
+  #     KC_DB_USERNAME: keycloak
+  #     KC_DB_PASSWORD: keycloakpassword
+  #     KEYCLOAK_ADMIN: admin
+  #     KEYCLOAK_ADMIN_PASSWORD: admin
+  #   ports:
+  #     - "8088:8080"
+  #   depends_on:
+  #     - postgres-keycloak
+  #   volumes:
+  #     - keycloak_data:/opt/keycloak/data  # Volumen persistente para Keycloak
+  #   networks:
+  #     - mynetwork
 
 networks:
   mynetwork:
     driver: bridge
 
 volumes:
-  mysql_user_data:
-  mysql_account_data:
-  postgres_data:
-  keycloak_data:
+  mysql_data_wallet:
+  # postgres_data:
+  # keycloak_data:
