@@ -11,9 +11,6 @@ import java.io.File;
 public class ApiCuentaApplication {
 
 	public static void main(String[] args) {
-
-		File log4j2file = new File("src/main/resources/log4j2.properties");
-		Configurator.initialize(null, log4j2file.getAbsolutePath());
 		SpringApplication.run(ApiCuentaApplication.class, args);
 	}
 
