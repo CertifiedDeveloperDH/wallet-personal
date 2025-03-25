@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface TransaccionRepository extends JpaRepository<Transaccion,Long> {
+public interface TransaccionRepository extends CrudRepository<Transaccion,Long> {
     List<Transaccion> findByCuentaIdAndTipo(Long cuentaId, String tipo);
 
 }
