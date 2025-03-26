@@ -8,6 +8,9 @@ public class CuentaDTO {
     private BigDecimal balance;
     private Long userId;
 
+    public CuentaDTO() {
+    }
+
     public CuentaDTO(Long id, String alias, BigDecimal balance, Long userId) {
         this.id = id;
         this.alias = alias;
@@ -29,5 +32,9 @@ public class CuentaDTO {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

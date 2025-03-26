@@ -29,4 +29,8 @@ public class Cuenta {
 
     @Column(nullable = false)
     private Long userId; // ID del usuario asociado a la cuenta
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 }
