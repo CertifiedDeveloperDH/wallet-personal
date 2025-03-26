@@ -8,12 +8,17 @@ public class UsuarioDTO {
     private String nombre;
     private String apellido;
     private String email;
+    private String password;
 
-    public UsuarioDTO(Long id, String nombre, String apellido, String email) {
+    public UsuarioDTO() {
+    }
+
+    public UsuarioDTO(Long id, String nombre, String apellido, String email, String password) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
@@ -30,5 +35,9 @@ public class UsuarioDTO {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
