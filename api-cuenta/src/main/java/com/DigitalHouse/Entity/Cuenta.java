@@ -27,10 +27,17 @@ public class Cuenta {
     @Column(nullable = false)
     private BigDecimal balance;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId; // ID del usuario asociado a la cuenta
 
+    public Cuenta(BigDecimal balance, Long userId) {
+        this.alias = generateAlias(); // Generar alias automáticamente al crear una cuenta
+        this.balance = balance;
+        this.userId = userId;
+    }
     public void setAlias(String alias) {
-        this.alias = alias;
+        if (this.alias == null || this.alias.isEmpty()) {
+            this.alias = alias;
+        }
     }
 }

@@ -35,11 +35,16 @@ public class CuentaServiceImp implements CuentaService{
     @Override
     public Cuenta actualizarCuenta(Long id, Cuenta cuenta) {
         return cuentaRepository.findById(id).map(c -> {
-            c.setAlias(cuenta.getAlias());
-            c.setBalance(cuenta.getBalance());
+            // Solo cambiar alias si el usuario envió un alias nuevo
+            if (cuenta.getAlias() != null && !cuenta.getAlias().isEmpty()) {
+                c.setAlias(cuenta.getAlias());
+            }
+
+            c.setBalance(cuenta.getBalance());  // Actualizar balance
             return cuentaRepository.save(c);
         }).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
     }
+
 
     @Override
     public void eliminarCuenta(Long id) {
@@ -60,4 +65,8 @@ public class CuentaServiceImp implements CuentaService{
             throw new RuntimeException("Cuenta no encontrada para el usuario con ID: " + userId);
         }
     }
+    public boolean aliasExistente(String alias) {
+        return cuentaRepository.findByAlias(alias).isPresent();
+    }
+
 }

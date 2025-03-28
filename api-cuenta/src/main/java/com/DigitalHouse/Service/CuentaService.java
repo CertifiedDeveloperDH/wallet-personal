@@ -12,4 +12,5 @@ public interface CuentaService {
     Cuenta actualizarCuenta(Long id, Cuenta cuenta);
     void eliminarCuenta(Long id);
     void actualizarAlias(Long userId, String newAlias);
+    public boolean aliasExistente(String alias);
 }

@@ -3,6 +3,7 @@ package com.DigitalHouse.Controller;
 import com.DigitalHouse.Entity.Cuenta;
 import com.DigitalHouse.Service.CuentaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,6 @@ public class CuentaController {
         return ResponseEntity.ok(nuevaCuenta);
     }
 
-    @GetMapping("/usuario/{userId}")
-    public ResponseEntity<List<Cuenta>> obtenerCuentasPorUsuario(@PathVariable Long userId) {
-        Optional<Cuenta> cuenta = cuentaService.obtenerCuentaPorId(userId);
-        return cuenta.isPresent()
-                ? ResponseEntity.ok(List.of(cuenta.get()))
-                : ResponseEntity.notFound().build();
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Cuenta> obtenerCuentaPorId(@PathVariable Long id) {
@@ -38,19 +32,44 @@ public class CuentaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cuenta> actualizarCuenta(@PathVariable Long id, @RequestBody Cuenta cuenta) {
-        Cuenta cuentaActualizada = cuentaService.actualizarCuenta(id, cuenta);
-        return ResponseEntity.ok(cuentaActualizada);
+        try {
+            Cuenta cuentaActualizada = cuentaService.actualizarCuenta(id, cuenta);
+            return ResponseEntity.ok(cuentaActualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // o un mensaje con más detalle
+        }
     }
+
 
     @PutMapping("/usuario/{userId}/alias")
     public ResponseEntity<Void> actualizarAlias(@PathVariable Long userId, @RequestParam String alias) {
+        // Verifica si el usuario existe
+        Optional<Cuenta> cuentaOpt = cuentaService.obtenerCuentaPorId(userId);
+        if (cuentaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Si no se encuentra el usuario, responde con 404
+        }
+
+        // Verifica si el alias ya está en uso
+        if (cuentaService.aliasExistente(alias)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Si el alias ya existe, responde con 400
+        }
+
+        // Actualiza el alias
         cuentaService.actualizarAlias(userId, alias);
+
+        // Retorna respuesta 204 No Content si la actualización fue exitosa
         return ResponseEntity.noContent().build();
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCuenta(@PathVariable Long id) {
-        cuentaService.eliminarCuenta(id);
-        return ResponseEntity.noContent().build();
+        try {
+            cuentaService.eliminarCuenta(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
+
 }
