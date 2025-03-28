@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface CuentaRepository extends CrudRepository<Cuenta,Long> {
     Optional<Cuenta> findByUserId(Long userId);
+    Optional<Cuenta> findByAlias(String alias);
+
 }
