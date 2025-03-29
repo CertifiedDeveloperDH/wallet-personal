@@ -5,7 +5,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ApiCuentaApplication {
+public class ApiCardApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiCardApplication.class, args);

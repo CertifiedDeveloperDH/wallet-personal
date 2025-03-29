@@ -1,4 +1,4 @@
-package com.microservices.auth.exception;
+package com.DigitalHouse.exception;
 
 public class ResourceNotFoundException  extends Exception{
 

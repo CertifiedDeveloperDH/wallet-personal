@@ -1,6 +1,8 @@
 package com.DigitalHouse;
 
+import com.DigitalHouse.DTO.CardDTO;
 import com.DigitalHouse.DTO.CuentaDTO;
+import com.DigitalHouse.Entity.Card;
 import com.DigitalHouse.Entity.Cuenta;
 import com.DigitalHouse.Service.CuentaService;
 import com.DigitalHouse.exception.ResourceNotFoundException;
@@ -10,8 +12,11 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,9 +25,10 @@ class ApiCuentaApplicationTests {
 
 	CuentaService cuentaService;
 	@Autowired
-	public ApiCuentaApplicationTests(CuentaService usuarioService){
+	public ApiCuentaApplicationTests(CuentaService cuentaService){
 		this.cuentaService = cuentaService;
 	}
+
 
 	CuentaDTO cuentaDTO;
 	Cuenta cuenta;
@@ -37,49 +43,70 @@ class ApiCuentaApplicationTests {
 	@Test
 	@Order(2)
 	void dBuscar() {
-		Cuenta cuentaB = cuentaService.obtenerCuentaPorId(1L).orElse(null);
+		ResponseEntity<Cuenta> response = cuentaService.obtenerCuentaPorId(1L);
+		Cuenta cuentaB = response.getBody();
+
 		assertNotNull(cuentaB);
 	}
+
 
 	@Test
 	@Order(1)
 	void eRegistrar() {
-		cuentaService.crearCuenta(cuenta);
 
-		Cuenta cuentaDTOB = cuentaService.obtenerCuentaPorId(1L).orElse(null);
+		// Llamar al servicio para crear la cuenta
+		ResponseEntity<Cuenta> response = cuentaService.crearCuenta(cuentaDTO);
+		Cuenta cuentaCreada = response.getBody();
 
-		assertNotNull(cuentaDTOB);
+		// Asegúrate de que la cuenta fue creada correctamente
+		assertNotNull(cuentaCreada);
+		assertEquals(cuenta.getAlias(), cuentaCreada.getAlias()); // Ahora deberías comparar el alias de Cuenta
 	}
+
+
+
 	@Test
 	@Order(6)
 	void aEliminar() throws ResourceNotFoundException {
-		cuentaService.eliminarCuenta(1L);
-		assertNull(cuentaService.obtenerCuentaPorId(1L).orElse(null));
+		ResponseEntity<Void> response = cuentaService.eliminarCuenta(1L);
+
+		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()); // Verifica el código de estado 204
+		assertNull(cuentaService.obtenerCuentaPorId(1L).getBody());  // Verifica que la cuenta fue eliminada
 	}
+
+
 
 	@Test
 	@Order(4)
 	void bActualizar() throws ResourceNotFoundException {
 		BigDecimal balanceB = new BigDecimal("2000");
-		CuentaDTO cuentaDTOB= new CuentaDTO(1L, "río",balanceB , 1L);
-		Cuenta cuentaB = objectMapper.convertValue(cuentaDTOB, Cuenta.class);
+		CuentaDTO cuentaDTOB = new CuentaDTO(1L, "río", balanceB, 1L);
 
-		assertNotNull(cuentaService.actualizarCuenta(1L, cuentaB));
+		ResponseEntity<Cuenta> response = cuentaService.actualizarCuenta(1L, cuentaDTOB);
+
+		Cuenta cuentaActualizada = response.getBody();
+		assertNotNull(cuentaActualizada);
+		assertEquals("río", cuentaActualizada.getAlias());  // Asegúrate de verificar los cambios
 	}
 
 	@Test
 	@Order(5)
-	void bActualizarAlias() throws RuntimeException {
+	void bActualizarAlias() {
 		cuentaService.actualizarAlias(1L, "río");
-		Cuenta cuentaC = cuentaService.obtenerCuentaPorId(1L).orElse(null);
+
+		ResponseEntity<Cuenta> response = cuentaService.obtenerCuentaPorId(1L);
+		Cuenta cuentaC = response.getBody();
+
 		assertNotNull(cuentaC);
+		assertEquals("río", cuentaC.getAlias()); // Verifica que el alias haya sido actualizado
 	}
 
 	@Test
 	@Order(3)
 	void cBuscarTodos() {
-		assertFalse(cuentaService.listarCuentas().isEmpty());
-		assertNotNull(cuentaService.listarCuentas());
+		ResponseEntity<List<Cuenta>> response = cuentaService.listarCuentas();
+		List<Cuenta> cuentas = response.getBody();
+		assertNotNull(cuentas);
+		assertFalse(cuentas.isEmpty());
 	}
-
 }
