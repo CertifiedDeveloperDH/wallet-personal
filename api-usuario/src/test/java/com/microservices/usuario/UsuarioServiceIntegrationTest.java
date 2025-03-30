@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,7 +38,7 @@ public class UsuarioServiceIntegrationTest {
 
     private Usuario crearUsuarioTest() {
         // Crear UsuarioDTO para probar la conversión
-        UsuarioDTO usuarioDTO = new UsuarioDTO(null, "Juan", "Perez", "juan.perez@test.com");
+        UsuarioDTO usuarioDTO = new UsuarioDTO(null, "Juan", "Perez", "juan.perez@test.com", "123456");
 
         // Convertir UsuarioDTO a Usuario
         Usuario usuario = objectMapper.convertValue(usuarioDTO, Usuario.class);
@@ -50,7 +51,7 @@ public class UsuarioServiceIntegrationTest {
     @Order(1)
     public void testCrearUsuario() throws Exception {
         // Crear un UsuarioDTO para crear un usuario
-        UsuarioDTO usuarioDTO = new UsuarioDTO(null, "Juan", "Perez", "juan.perez@test.com");
+        UsuarioDTO usuarioDTO = new UsuarioDTO(null, "Juan", "Perez", "juan.perez@test.com", "123456");
 
         // Convertir UsuarioDTO a Usuario
         Usuario usuario = objectMapper.convertValue(usuarioDTO, Usuario.class);
@@ -90,7 +91,7 @@ public class UsuarioServiceIntegrationTest {
         Usuario usuarioCreado = crearUsuarioTest();
 
         // Modificar usuario
-        UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioCreado.getId(), "Juan Carlos", "Perez Actualizado", "juan.carlos@test.com");
+        UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioCreado.getId(), "Juan Carlos", "Perez Actualizado", "juan.carlos@test.com", "123456");
 
         // Convertir UsuarioDTO a Usuario
         Usuario usuarioActualizado = objectMapper.convertValue(usuarioDTO, Usuario.class);

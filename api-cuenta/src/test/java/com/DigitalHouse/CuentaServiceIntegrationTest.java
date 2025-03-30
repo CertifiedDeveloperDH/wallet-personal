@@ -1,26 +1,24 @@
 package com.DigitalHouse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.DigitalHouse.DTO.CuentaDTO;
 import com.DigitalHouse.Entity.Cuenta;
-import com.DigitalHouse.Repository.CuentaRepository;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.DigitalHouse.Service.CuentaService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.config.name=application-test")
 @AutoConfigureMockMvc
@@ -31,24 +29,30 @@ public class CuentaServiceIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private CuentaRepository cuentaRepository;
+    private CuentaService cuentaService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Crear una cuenta de prueba
-    private Cuenta crearCuentaPrueba() {
-        return new Cuenta(null, "usuario123", new BigDecimal("5000"), 1L);
+    // Crear una cuenta de prueba (CuentaDTO)
+    private CuentaDTO crearCuentaDTOPrueba() {
+        return new CuentaDTO(1L, "usuario123", new BigDecimal("5000"), 1L);
+    }
+
+    @BeforeEach
+    void doBefore() {
+        // Puedes inicializar el objeto CuentaDTO aquí si es necesario para las pruebas.
     }
 
     @Test
     @Order(1)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testCrearCuenta() throws Exception {
-        Cuenta cuenta = crearCuentaPrueba();
+        CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/cuentas")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(cuenta)))
+                        .content(objectMapper.writeValueAsString(cuentaDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated()) // Código 201 Created
                 .andReturn();
 
@@ -57,9 +61,11 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(2)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testObtenerCuentaPorId() throws Exception {
         // Guardar cuenta en la base de datos antes de buscarla
-        Cuenta cuentaGuardada = cuentaRepository.save(crearCuentaPrueba());
+        CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
+        Cuenta cuentaGuardada = cuentaService.crearCuenta(cuentaDTO).getBody(); // Guarda la cuenta
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/cuentas/1", cuentaGuardada.getId())
                         .accept(MediaType.APPLICATION_JSON))
@@ -71,8 +77,10 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(3)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testActualizarCuenta() throws Exception {
-        Cuenta cuentaGuardada = cuentaRepository.save(crearCuentaPrueba());
+        CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
+        Cuenta cuentaGuardada = cuentaService.crearCuenta(cuentaDTO).getBody(); // Guarda la cuenta
 
         // Modificar datos
         cuentaGuardada.setAlias("nuevoAlias");
@@ -89,14 +97,16 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(4)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testEliminarCuenta() throws Exception {
-        Cuenta cuentaGuardada = cuentaRepository.save(crearCuentaPrueba());
+        CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
+        Cuenta cuentaGuardada = cuentaService.crearCuenta(cuentaDTO).getBody(); // Guarda la cuenta
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/cuentas/1", cuentaGuardada.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         // Verificar que la cuenta ha sido eliminada
-        Optional<Cuenta> cuentaEliminada = cuentaRepository.findById(cuentaGuardada.getId());
-        assertTrue(cuentaEliminada.isEmpty());
+        assertNull(cuentaService.obtenerCuentaPorId(cuentaGuardada.getId()).getBody());
     }
 }
+

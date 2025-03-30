@@ -8,6 +8,11 @@
         <option value="$PROJECT_DIR$/api-eureka/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/api-auth/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_19" default="true" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK" />
 </project>

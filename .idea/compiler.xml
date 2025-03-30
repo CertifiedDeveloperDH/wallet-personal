@@ -9,17 +9,23 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api-transaccion" />
         <module name="api-config" />
+        <module name="api-card" />
         <module name="api-cuenta" />
         <module name="api-gateway" />
+        <module name="api-common" />
         <module name="api-eureka" />
-        <module name="api-auth" />
         <module name="api-usuario" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api-auth" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-auth" options="-parameters" />
+      <module name="api-card" options="-parameters" />
+      <module name="api-common" options="-parameters" />
       <module name="api-config" options="-parameters" />
       <module name="api-cuenta" options="-parameters" />
       <module name="api-eureka" options="-parameters" />
