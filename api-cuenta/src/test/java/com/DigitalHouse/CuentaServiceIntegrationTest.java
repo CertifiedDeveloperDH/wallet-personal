@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -45,6 +46,7 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(1)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testCrearCuenta() throws Exception {
         CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
 
@@ -59,6 +61,7 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(2)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testObtenerCuentaPorId() throws Exception {
         // Guardar cuenta en la base de datos antes de buscarla
         CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
@@ -74,6 +77,7 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(3)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testActualizarCuenta() throws Exception {
         CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
         Cuenta cuentaGuardada = cuentaService.crearCuenta(cuentaDTO).getBody(); // Guarda la cuenta
@@ -93,6 +97,7 @@ public class CuentaServiceIntegrationTest {
 
     @Test
     @Order(4)
+    @WithMockUser(username = "admin", roles = "USER")
     public void testEliminarCuenta() throws Exception {
         CuentaDTO cuentaDTO = crearCuentaDTOPrueba();
         Cuenta cuentaGuardada = cuentaService.crearCuenta(cuentaDTO).getBody(); // Guarda la cuenta

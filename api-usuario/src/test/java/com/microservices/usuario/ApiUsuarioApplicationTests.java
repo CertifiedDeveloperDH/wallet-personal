@@ -9,6 +9,7 @@ import com.microservices.usuario.service.UsuarioService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ class ApiUsuarioApplicationTests {
 	@BeforeEach
 	void doBefore(){
 		ObjectMapper objectMapper = new ObjectMapper(); // Inicializar ObjectMapper antes de cada prueba
-		UsuarioDTO usuarioDTO = new UsuarioDTO(1L, "Juan", "Pérez", "juan@example.com");
+		UsuarioDTO usuarioDTO = new UsuarioDTO(1L, "Juan", "Pérez", "juan@example.com", "123456");
 		Usuario usuario = objectMapper.convertValue(usuarioDTO, Usuario.class);
 	}
 	@Test
@@ -59,7 +60,7 @@ class ApiUsuarioApplicationTests {
 	@Test
 	@Order(4)
 	void bActualizar() throws ResourceNotFoundException {
-		UsuarioDTO usuarioDTOB= new UsuarioDTO(1L, "Juan_cambiado", "Pérez_cambiado", "juan@example.com_cambiado");
+		UsuarioDTO usuarioDTOB= new UsuarioDTO(1L, "Juan_cambiado", "Pérez_cambiado", "juan@example.com_cambiado", "123456");
 		Usuario usuarioB = objectMapper.convertValue(usuarioDTOB, Usuario.class);
 
 		assertNotNull(usuarioService.actualizarUsuario(1L, usuarioB));

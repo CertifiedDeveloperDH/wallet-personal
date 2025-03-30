@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -42,6 +43,7 @@ class ApiCuentaApplicationTests {
 	}
 	@Test
 	@Order(2)
+	@WithMockUser(username = "admin", roles = "USER")
 	void dBuscar() {
 		ResponseEntity<Cuenta> response = cuentaService.obtenerCuentaPorId(1L);
 		Cuenta cuentaB = response.getBody();
@@ -52,6 +54,7 @@ class ApiCuentaApplicationTests {
 
 	@Test
 	@Order(1)
+	@WithMockUser(username = "admin", roles = "USER")
 	void eRegistrar() {
 
 		// Llamar al servicio para crear la cuenta
@@ -67,6 +70,7 @@ class ApiCuentaApplicationTests {
 
 	@Test
 	@Order(6)
+	@WithMockUser(username = "admin", roles = "USER")
 	void aEliminar() throws ResourceNotFoundException {
 		ResponseEntity<Void> response = cuentaService.eliminarCuenta(1L);
 
@@ -78,6 +82,7 @@ class ApiCuentaApplicationTests {
 
 	@Test
 	@Order(4)
+	@WithMockUser(username = "admin", roles = "USER")
 	void bActualizar() throws ResourceNotFoundException {
 		BigDecimal balanceB = new BigDecimal("2000");
 		CuentaDTO cuentaDTOB = new CuentaDTO(1L, "río", balanceB, 1L);
@@ -91,6 +96,7 @@ class ApiCuentaApplicationTests {
 
 	@Test
 	@Order(5)
+	@WithMockUser(username = "admin", roles = "USER")
 	void bActualizarAlias() {
 		cuentaService.actualizarAlias(1L, "río");
 
@@ -103,6 +109,7 @@ class ApiCuentaApplicationTests {
 
 	@Test
 	@Order(3)
+	@WithMockUser(username = "admin", roles = "USER")
 	void cBuscarTodos() {
 		ResponseEntity<List<Cuenta>> response = cuentaService.listarCuentas();
 		List<Cuenta> cuentas = response.getBody();
