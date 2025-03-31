@@ -1,4 +1,4 @@
-package com.DigitalHouse.app;
+package com.DigitalHouse.common;
 
 public class Main {
     public static void main(String[] args) {

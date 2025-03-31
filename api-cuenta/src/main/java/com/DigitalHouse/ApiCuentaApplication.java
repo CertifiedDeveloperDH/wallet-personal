@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@ComponentScan(basePackages = {"com.DigitalHouse.common.exception"})
+@ComponentScan(basePackages = {"com.microservices.cuenta", "com.DigitalHouse.common"})
 public class ApiCuentaApplication {
 
 	public static void main(String[] args) {
