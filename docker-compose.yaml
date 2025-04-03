@@ -18,41 +18,21 @@ services:
     networks:
       - mynetwork
 
-  # Comentado Keycloak y PostgreSQL
-  # postgres-keycloak:
-  #   image: postgres:16
-  #   container_name: postgres-keycloak-container
-  #   restart: always
-  #   environment:
-  #     POSTGRES_DB: keycloak_db
-  #     POSTGRES_USER: keycloak
-  #     POSTGRES_PASSWORD: keycloakpassword
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data  # Volumen persistente para PostgreSQL
-  #   networks:
-  #     - mynetwork
-
-  # keycloak:
-  #   image: quay.io/keycloak/keycloak:24.0.2
-  #   container_name: keycloak-container
-  #   command: ["start-dev"]
-  #   environment:
-  #     KC_DB: postgres
-  #     KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak_db
-  #     KC_DB_USERNAME: keycloak
-  #     KC_DB_PASSWORD: keycloakpassword
-  #     KEYCLOAK_ADMIN: admin
-  #     KEYCLOAK_ADMIN_PASSWORD: admin
-  #   ports:
-  #     - "8088:8080"
-  #   depends_on:
-  #     - postgres-keycloak
-  #   volumes:
-  #     - keycloak_data:/opt/keycloak/data  # Volumen persistente para Keycloak
-  #   networks:
-  #     - mynetwork
+  # Keycloak Service
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    restart: always
+    environment:
+      - KEYCLOAK_ADMIN=admin  # Admin user for Keycloak
+      - KEYCLOAK_ADMIN_PASSWORD=admin  # Admin password for Keycloak
+      - KEYCLOAK_HTTP_PORT=8080  # Expose Keycloak on port 8080
+    ports:
+      - "8088:8080"  # Access Keycloak on http://localhost:8088
+    networks:
+      - mynetwork
+    depends_on:
+      - mysql-db  # Wait for MySQL to be ready
 
 networks:
   mynetwork:
@@ -60,5 +40,4 @@ networks:
 
 volumes:
   mysql_data_wallet:
-  # postgres_data:
-  # keycloak_data:
+    driver: local  # Definir el driver del volumen

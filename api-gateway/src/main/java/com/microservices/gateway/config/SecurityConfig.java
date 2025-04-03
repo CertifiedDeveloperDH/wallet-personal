@@ -19,9 +19,14 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(cors -> cors.disable()) // CORS se maneja con CorsWebFilter
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/api/usuario/**").permitAll() // Permite el acceso sin autenticación a /api/usuario/**
-                        .pathMatchers("/api-cuenta/**").permitAll() // Exige autenticación para /api-cuenta/**.anyExchange().permitAll())
-                        .anyExchange().permitAll())
+                        .pathMatchers("/auth/**").permitAll() // Permite login y logout sin autenticación
+                        .pathMatchers("/api/usuarios/**").authenticated()
+                        .pathMatchers("/api/cuenta/**").authenticated()
+                        .pathMatchers("/api/transaccion/**").authenticated()
+                        .pathMatchers("/cards/**").authenticated()
+                        .anyExchange().permitAll()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {})) // Nueva sintaxis para habilitar JWT
                 .build();
     }
 
@@ -36,10 +41,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
 
         return new CorsWebFilter(source);
-    }
-
-    @Bean
-    public PropagateAuthorizationHeaderFilter propagateAuthorizationHeaderFilter() {
-        return new PropagateAuthorizationHeaderFilter();
     }
 }
