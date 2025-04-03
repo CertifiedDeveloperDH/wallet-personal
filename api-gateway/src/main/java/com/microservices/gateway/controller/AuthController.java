@@ -18,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        String keycloakUrl = "http://localhost:8088/realms/mi-realm/protocol/openid-connect/token";
+        String keycloakUrl = "http://localhost:9100/realms/mi-realm/protocol/openid-connect/token";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("client_id", "mi-cliente");
@@ -39,7 +39,7 @@ public class AuthController {
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
 
-        String keycloakUrl = "http://localhost:8088/realms/mi-realm/protocol/openid-connect/logout";
+        String keycloakUrl = "http://localhost:9100/realms/mi-realm/protocol/openid-connect/logout";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("client_id", "mi-cliente");
