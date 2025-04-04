@@ -8,7 +8,9 @@
 
 - **Gestión de usuarios**: Registro, autenticación y gestión de perfiles de usuario mediante JWT.
 - **Gestión de cuentas**: Creación de cuentas bancarias asociadas a usuarios, con posibilidad de ver el saldo y realizar operaciones.
+- **Gestión de tarjetas**: Administración de tarjetas bancarias asociadas a cuentas.
 - **Transacciones**: Realización de transacciones entre cuentas, incluyendo ingresos y egresos.
+- 
 
 ## Arquitectura
 
@@ -16,9 +18,10 @@ El sistema está compuesto por los siguientes microservicios:
 
 1. **API-Usuario**: Gestiona el registro y autenticación de usuarios usando JWT.
 2. **API-Cuenta**: Gestiona la creación y visualización de cuentas bancarias.
-3. **API-Transacción**: Permite realizar transacciones entre cuentas.
-4. **Base de datos MySQL**: Para almacenamiento de usuarios, cuentas y transacciones.
-5.**Uso del JWT**: Para interactuar con otros microservicios como **API-Cuenta** o **API-Transacción**, el usuario debe incluir el JWT en el encabezado de las solicitudes HTTP.
+3. **API-Card**: Permite la gestión de tarjetas bancarias.
+4. **API-Transacción**: Permite realizar transacciones entre cuentas.
+5. **Base de datos MySQL**: Para almacenamiento de usuarios, cuentas y transacciones.
+6.**Uso del JWT**: Para interactuar con otros microservicios como **API-Cuenta** o **API-Transacción**, el usuario debe incluir el JWT en el encabezado de las solicitudes HTTP.
 
 
 ## Requisitos
@@ -57,24 +60,34 @@ API-Usuario: http://localhost:8087
 
 API-Cuenta: http://localhost:8089
 
+API-Card	http://localhost:8090
+
 API-Transacción: http://localhost:8091
 
 ### JWT Autenticación
 Flujo de Autenticación
-Registro de Usuario: Enviar una solicitud POST a /usuarios/register con los datos del usuario (nombre, apellido, email, y contraseña). Si el registro es exitoso, se devuelve un JWT.
+Registro de Usuario: Enviar una solicitud POST a /login con los datos del usuario (nombre, apellido, email, y contraseña). Si el registro es exitoso, se devuelve un JWT.
 
-Inicio de Sesión: Enviar una solicitud POST a /usuarios/login con las credenciales del usuario (email y contraseña). Si las credenciales son correctas, el servidor responde con un JWT.
+Inicio de Sesión: Enviar una solicitud POST a /login con las credenciales del usuario (email y contraseña). Si las credenciales son correctas, el servidor responde con un JWT.
+
+Cierre de Sesión: Enviar una solicitud POST a /logout con token y cliente id.
 
 Uso del JWT: El JWT se debe enviar en el encabezado Authorization de todas las solicitudes posteriores que requieran autenticación. El formato debe ser:
 
 Authorization: Bearer <jwt_token>
 
 ### Endpoints de Autenticación
-POST /usuarios/register: Registra un nuevo usuario.
+P🔐 Autenticación con Keycloak via API Gateway
 
-POST /usuarios/login: Inicia sesión con un usuario existente y recibe un JWT.
+Flujo:
 
-GET /usuarios/{id}: Obtiene los detalles del usuario por su ID (requiere JWT en el encabezado).
+Keycloak valida usuario/contraseña y emite JWT.
+
+El cliente incluye el JWT en el header de cada solicitud.
+
+API Gateway valida el token y enruta la petición.
+
+Obtener Token con cURL:
 
 ### Estructura del JWT
 
@@ -86,26 +99,47 @@ roles: Roles del usuario (por ejemplo, "ROLE_USER").
 
 exp (expiration): Tiempo de expiración del token.
 
+curl -X POST http://localhost:9100/realms/mi-realm/protocol/openid-connect/token \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "username=usuario" \
+-d "password=clave123" \
+-d "grant_type=password" \
+-d "client_id=wallet-client"
+
+{
+"access_token": "<jwt_token>",
+...
+}
+
 ### Microservicios
 
 ## API-Usuario
-POST /usuarios/register: Registra un nuevo usuario y devuelve un JWT.
-
-POST /usuarios/login: Inicia sesión con las credenciales del usuario y devuelve un JWT.
 
 GET /usuarios/{id}: Obtiene los detalles de un usuario (requiere JWT).
 
 ## API-Cuenta
-OST /cuentas: Crea una nueva cuenta para el usuario autenticado.
+POST /api/cuenta/cuentas
 
-GET /cuentas/{id}: Obtiene los detalles de la cuenta por su ID (requiere JWT).
+GET /api/cuenta/cuentas/{id}
 
-GET /cuentas/usuario/{usuarioId}: Obtiene todas las cuentas de un usuario.
+GET /api/cuenta/cuentas/usuario/{usuarioId}
 
 ## API-Transacción
-POST /transacciones: Realiza una transacción entre dos cuentas bancarias (requiere JWT).
+POST /api-transaccion/transacciones
 
-GET /transacciones/{id}: Obtiene los detalles de una transacción por su ID.
+GET /api-transaccion/transacciones/{id}
+
+## API-Card
+
+POST /cards
+
+GET /cards
+
+GET /cards/{id}
+
+PUT /cards/{id}
+
+DELETE /cards/{id}
 
 ### Configuración
 
@@ -129,6 +163,41 @@ jwt.secret=mi_clave_secreta
 jwt.token-prefix=Bearer
 jwt.header=Authorization
 
+## Ejemplos de Peticiones con cURL
+
+# Crear cuenta bancaria
+curl -X POST http://localhost:8090/api/cuenta/cuentas \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: application/json" \
+-d '{
+"nombre": "Cuenta Corriente",
+"saldoInicial": 500.0,
+"usuarioId": 1
+}'
+
+## Crear tarjeta
+curl -X POST http://localhost:8090/cards \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: application/json" \
+-d '{
+"numero": "9999888877776666",
+"tipo": "Mastercard",
+"cuenta": {
+"id": 1
+}
+}'
+
+## Crear transacción
+
+curl -X POST http://localhost:8090/api-transaccion/transacciones \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: application/json" \
+-d '{
+"cuentaOrigenId": 1,
+"cuentaDestinoId": 2,
+"monto": 150.00,
+"descripcion": "Pago de servicios"
+}'
 
 ### Contribución
 Si deseas contribuir a este proyecto, sigue estos pasos:
